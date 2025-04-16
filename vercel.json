@@ -1,0 +1,21 @@
+{
+    "builds" : [
+        {
+            "src": "youtube/wsgi.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "build.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "staticfiles"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "youtube/wsgi.py"
+        }
+    ]
+}
