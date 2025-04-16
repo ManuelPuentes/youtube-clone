@@ -1,0 +1,16 @@
+<div class="product-grid flex flex-col" id="comments_container">
+  {% for producto in comments %}
+    <div class="flex w-full items-center p-2 justify-between gap-2">
+      <div class="avatar">
+        <div class="w-12 h-12 rounded-full">
+          <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+        </div>
+      </div>
+      <div class="w-full flex flex-col">
+        <span class="text-sm">@{{ producto.user }}</span>
+        <pre class="text-sm">{{ producto.text }}</pre>
+      </div>
+    </div>
+    <div class="divider m-0 p-0"></div>
+  {% endfor %}
+</div>

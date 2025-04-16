@@ -1,0 +1,27 @@
+{% comment %} {% load static %} <!-- Esto carga la tag de static files --> {% endcomment %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      {% block title %}
+        Mi Pagina
+      {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% comment %} <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" /> {% endcomment %}
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    {% tailwind_css %}
+    {% block head %}
+
+    {% endblock %}
+  </head>
+
+  <body class="flex min-w-[300px] flex-col font-mono">
+    {% include 'partials/navbar.html' %}
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>

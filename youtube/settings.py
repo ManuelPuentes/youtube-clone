@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^f_vqt^p%kp*)e9^qa(4@$#*l9clsq7&s9*6ctg$-h8xix^$wb'
+SECRET_KEY = 'django-insecure-2l2+nn2rm4p&w^(grbdv_0)4l^g+tn*(qzvy7tc17!$fnfw-jp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
 
 # Application definition
@@ -37,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tailwind',
+    'theme',
+    'django_browser_reload',
+    'core',
+
 ]
 
 MIDDLEWARE = [
@@ -47,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = 'youtube.urls'
@@ -66,8 +74,11 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'youtube.wsgi.application'
 
+WSGI_APPLICATION = 'youtube.wsgi.app'
+TAILWIND_APP_NAME = 'theme'
+
+NPM_BIN_PATH = r'C:\Program Files\nodejs\npm.cmd'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -79,6 +90,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'core.CustomUser'  # Formato: 'nombre_app.nombre_modelo'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -116,7 +128,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core/static'),  # Agrega la ruta a tu carpeta static
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+YOUTUBE_API_KEY = config('YOUTUBE_API_KEY')

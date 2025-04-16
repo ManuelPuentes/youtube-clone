@@ -1,0 +1,110 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/lite-yt-embed.css' %}" />
+  <script src="{% static 'js/lite-yt-embed.js' %}"></script>
+  <script src="{% static 'js/watch.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  {% csrf_token %}
+  <div class="max-w-[1800px] mx-auto px-4 py-4 grid grid-cols-1 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <div class="relative aspect-video bg-black rounded-lg overflow-hidden border flex justify-center">
+        <lite-youtube videoid="{{ video_data.id }}" playlabel="{{ video_data.title }}" class="w-full"></lite-youtube>
+      </div>
+
+      <h1 class="font-bold mt-4 mb-2 text-3xl">{{ video_data.title }}</h1>
+
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        {% comment %}channel data{% endcomment %}
+        <div class="flex items-center gap-3">
+          <div class="avatar">
+            <div class="w-14 rounded-full">
+              <img src="{{ video_data.channel.thumbnail }}" />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">{{ video_data.channel.title }}</span>
+            </div>
+            <span class="text-xs">{{ video_data.channel.subscribers }}</span>
+          </div>
+
+          <button class="btn">suscrito</button>
+        </div>
+
+        {% comment %}end of channel data{% endcomment %}
+
+        {% comment %}like and dislike button{% endcomment %}
+
+        <div class="flex items-center sm:w-auto">
+          <div class="flex items-center overflow-hidden gap-4 mx-4">
+            <button class="btn" id="like">me gusta</button>
+            <button class="btn" id="dislike">no me gusta</button>
+          </div>
+        </div>
+      </div>
+      {% comment %}this is the description zone{% endcomment %}
+      <div class="border-base-300 bg-base-300 collapse border">
+        <input type="checkbox" class="peer" />
+        <div class="collapse-title">{{ video_data.views }} visualizaciones</div>
+        <div class="collapse-content">
+          <pre class="text-wrap" id="video_description">{{ video_data.description }}</pre>
+        </div>
+      </div>
+      {% comment %}this is the description zone{% endcomment %}
+
+      <div id="comments" class="lg:col-span-2 p-2 my-2">
+        <h1 class="text-3xl">comments</h1>
+
+        <div class="mx-auto">
+          <form action="/comment/" method="post" id="user_comment_form" class="flex gap-3 w-full items-center flex-col p-2 border-b">
+            {% csrf_token %}
+
+            <div class="flex w-full gap-2 items-center">
+              <div class="avatar">
+                <div class="w-12 h-12 rounded-full">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                </div>
+              </div>
+
+              <textarea id="user_comment" name="text" class="textarea w-[90%] bg-blue" placeholder="Añade un comentario..."></textarea>
+            </div>
+            <button class="btn self-end" id="submit_comment" type="submit">comment</button>
+          </form>
+
+          {% comment %} <div class="divider"></div> {% endcomment %}
+        </div>
+        {% include 'partials/comments.html' with page_obj=comments %}
+
+        {% comment %} {{ comments }} {% endcomment %}
+      </div>
+    </div>
+
+    <div class="lg:col-span-1 flex flex-col items-center gap-2">
+      {% comment %}{/* Featured Video */}{% endcomment %}
+      {% for video in related_videos %}
+        <div class="group w-full max-w-[360px]">
+          <div class="relative aspect-video mb-2 flex">
+            <img src="{{ video.thumbnail }}" alt="{{ video.title }}" class="object-cover transition-transform duration-300 hover:scale-105 w-full rounded-sm" />
+            <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded">{{ video.duration }}</div>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between">
+              <a href="/watch?v={{ video.id }}" class="font-semibold line-clamp-2 hover:underline">{{ video.title }}</a>
+            </div>
+
+            <a href="/channel/{{ video.channelTitle }}" class="text-xs text-muted-foreground">{{ video.channelTitle }}</a>
+
+            <div class="text-xs text-muted-foreground">
+              <span>{{ video.views }} visualizacines</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
