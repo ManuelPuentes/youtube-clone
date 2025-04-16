@@ -140,7 +140,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 STATICFILES_DIRS = [
-    # os.path.join(BASE_DIR, 'core/static'),  # Agrega la ruta a tu carpeta static
+     os.path.join(BASE_DIR, 'core/static'),  # Agrega la ruta a tu carpeta static
 ]
 
 # Default primary key field type
