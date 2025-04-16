@@ -29,7 +29,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.railway.app']
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.railway.app',
+    'https://youtube-clone-production.up.railway.app',
+]
 # Application definition
 
 INSTALLED_APPS = [
