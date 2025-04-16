@@ -16,6 +16,7 @@ google-api-python-client==2.167.0
 google-auth==2.39.0
 google-auth-httplib2==0.2.0
 googleapis-common-protos==1.70.0
+gunicorn==23.0.0
 httplib2==0.22.0
 idna==3.10
 isodate==0.7.2
@@ -23,6 +24,7 @@ Jinja2==3.1.6
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
+packaging==24.2
 proto-plus==1.26.1
 protobuf==6.30.2
 psycopg2-binary==2.9.10
