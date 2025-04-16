@@ -25,7 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2l2+nn2rm4p&w^(grbdv_0)4l^g+tn*(qzvy7tc17!$fnfw-jp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # Asegúrate que DEBUG esté False en producción
+
+
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.railway.app']
 
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     'core',
 
 ]
+if not DEBUG:
+    INSTALLED_APPS.remove('django_browser_reload')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,7 +140,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'core/static'),  # Agrega la ruta a tu carpeta static
+    # os.path.join(BASE_DIR, 'core/static'),  # Agrega la ruta a tu carpeta static
 ]
 
 # Default primary key field type

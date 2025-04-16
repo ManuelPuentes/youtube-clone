@@ -1,8 +1,13 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'layout.html' %} 
+{% load static %}
+
+
+{% block title %} Youtube{% endblock%}
 
 {% block head %}
-  <script src="{% static 'js/video_fetcher.js' %}"></script>
+  <script src="{% static 'core/js/video_fetcher.js' %}"></script>
 {% endblock %}
+
 
 {% block content %}
 

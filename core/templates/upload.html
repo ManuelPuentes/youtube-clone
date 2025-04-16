@@ -1,80 +1,78 @@
-{% load static %} <!-- Esto carga la tag de static files -->
-{% load static tailwind_tags %}
-<html>
-  <head>
-    <title>Creator page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="{% static 'js/upload.js' %}"></script>
-    {% tailwind_css %}
-  </head>
+{% extends 'base.html' %}
+{% load static %}
 
+{% block title %}
+  Creator page
+{% endblock %}
 
-  <body class="flex h-screen w-screen min-w-[300px] flex-col font-mono md:bg-[#f0f4f9]">
-    <div class="flex flex-col md:flex-row select-none md:m-auto lg:w-3/4 items-center px-10 py-5 md:rounded-4xl bg-base-100 max-w-[960px] min-h-[384px]">
-      <div class="w-full p-5 md:w-1/2 self-start flex flex-col gap-3">
-        <div class="flex items-center gap-2">
-          {% include 'icons/youtube.svg' with class='w-10 h-10' %}
-          <h2 class="text-3xl font-semibold">Youtube</h2>
-        </div>
+{% block head %}
+  <script src="{% static 'core/js/upload.js' %}"></script>
+{% endblock %}
 
-        <h1 class="text-3xl font-semibold">Subir Video</h1>
-        <p class="text-sm">preview</p>
+{% block content %}
+  <div class="flex flex-col md:flex-row select-none md:m-auto lg:w-3/4 items-center px-10 py-5 md:rounded-4xl bg-base-100 max-w-[960px] min-h-[384px]">
+    <div class="w-full p-5 md:w-1/2 self-start flex flex-col gap-3">
+      <div class="flex items-center gap-2">
+        {% include 'icons/youtube.svg' with class='w-10 h-10' %}
+        <h2 class="text-3xl font-semibold">Youtube</h2>
+      </div>
 
-        <div id="video_preview">
-          <div class="group w-full max-w-[360px]">
-            <div class="relative aspect-video mb-2 flex">
-              <img id="video_thumbnail" class="object-cover transition-transform duration-300 hover:scale-105 w-full rounded-sm" />
-              <div id="video_duration" class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded">00:00</div>
+      <h1 class="text-3xl font-semibold">Subir Video</h1>
+      <p class="text-sm">preview</p>
+
+      <div id="video_preview">
+        <div class="group w-full max-w-[360px]">
+          <div class="relative aspect-video mb-2 flex">
+            <img id="video_thumbnail" class="object-cover transition-transform duration-300 hover:scale-105 w-full rounded-sm" />
+            <div id="video_duration" class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded">00:00</div>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between">
+              <a class="font-semibold line-clamp-2 hover:underline" id="video_title">title</a>
             </div>
 
-            <div class="flex-1 min-w-0">
-              <div class="flex justify-between">
-                <a class="font-semibold line-clamp-2 hover:underline" id="video_title">title</a>
-              </div>
+            <a class="text-xs text-muted-foreground">{{ user }}</a>
 
-              <a class="text-xs text-muted-foreground">{{ user }}</a>
-
-              <div class="text-xs text-muted-foreground">
-                <span>0 visualizaciones</span>
-              </div>
+            <div class="text-xs text-muted-foreground">
+              <span>0 visualizaciones</span>
             </div>
           </div>
         </div>
       </div>
-
-      <form method="post" class="flex flex-col whitespace-nowrap gap-4 items-center md:w-1/2 w-full">
-        {% csrf_token %}
-
-        {% for field in upload_form %}
-          <fieldset class="fieldset flex flex-col w-full whitespace-normal">
-            <legend class="fieldset-legend w-full">{{ field.label_tag }}</legend>
-
-            {% if field.field.widget.input_type %}
-              <input id="{{ field.name }}" type="{{ field.field.widget.input_type }}" class="input w-full" placeholder="{{ field.field.widget.attrs.placeholder }}" autocomplete="on" name="{{ field.name }}" required />
-            {% else %}
-              <textarea name="{{ field.name }}" id="{{ field.name }}" class="textarea w-full"></textarea>
-            {% endif %}
-
-            {% if field.help_text %}
-              <span class="text-gray-500 overflow-hidden w-full">{{ field.help_text }}</span>
-            {% endif %}
-
-            {% comment %} {% if field.errors %}
-              <p class="text-red-500 overflow-hidden">{{ field.errors }}</p>
-            {% endif %} {% endcomment %}
-          </fieldset>
-        {% endfor %}
-
-        {% if upload_form.error %}
-          <p class="overflow-hidden text-ellipsis text-red-500 text-xs">{{ upload_form.error }}</p>
-        {% endif %}
-
-        <div class="w-full flex justify-end">
-          <button class="btn border border-[#e5e5e5] self-end" type="submit">Subir</button>
-        </div>
-      </form>
     </div>
-  </body>
-</html>
+
+    <form method="post" class="flex flex-col whitespace-nowrap gap-4 items-center md:w-1/2 w-full">
+      {% csrf_token %}
+
+      {% for field in upload_form %}
+        <fieldset class="fieldset flex flex-col w-full whitespace-normal">
+          <legend class="fieldset-legend w-full">{{ field.label_tag }}</legend>
+
+          {% if field.field.widget.input_type %}
+            <input id="{{ field.name }}" type="{{ field.field.widget.input_type }}" class="input w-full" placeholder="{{ field.field.widget.attrs.placeholder }}" autocomplete="on" name="{{ field.name }}" required />
+          {% else %}
+            <textarea name="{{ field.name }}" id="{{ field.name }}" class="textarea w-full"></textarea>
+          {% endif %}
+
+          {% if field.help_text %}
+            <span class="text-gray-500 overflow-hidden w-full">{{ field.help_text }}</span>
+          {% endif %}
+
+          {% comment %} {% if field.errors %}
+            <p class="text-red-500 overflow-hidden">{{ field.errors }}</p>
+          {% endif %} {% endcomment %}
+        </fieldset>
+      {% endfor %}
+
+      {% if upload_form.error %}
+        <p class="overflow-hidden text-ellipsis text-red-500 text-xs">{{ upload_form.error }}</p>
+      {% endif %}
+
+      <div class="w-full flex justify-between">
+        <a class="btn border border-[#e5e5e5] self-end" href="/">Atras</a>
+        <button class="btn border border-[#e5e5e5] self-end" type="submit">Subir</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

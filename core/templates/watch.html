@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'layout.html' %} {% load static %}
 
 {% block head %}
   <link rel="stylesheet" href="{% static 'css/lite-yt-embed.css' %}" />
@@ -36,15 +36,16 @@
         </div>
 
         {% comment %}end of channel data{% endcomment %}
-
-        {% comment %}like and dislike button{% endcomment %}
-
         <div class="flex items-center sm:w-auto">
           <div class="flex items-center overflow-hidden gap-4 mx-4">
             <button class="btn" id="like">me gusta</button>
             <button class="btn" id="dislike">no me gusta</button>
           </div>
         </div>
+
+        {% comment %}like and dislike button{% endcomment %}
+
+
       </div>
       {% comment %}this is the description zone{% endcomment %}
       <div class="border-base-300 bg-base-300 collapse border">
@@ -83,12 +84,12 @@
       </div>
     </div>
 
-    <div class="lg:col-span-1 flex flex-col items-center gap-2">
+    <div class="lg:col-span-1 flex flex-col items-center gap-2 mx-2">
       {% comment %}{/* Featured Video */}{% endcomment %}
       {% for video in related_videos %}
         <div class="group w-full max-w-[360px]">
           <div class="relative aspect-video mb-2 flex">
-            <img src="{{ video.thumbnail }}" alt="{{ video.title }}" class="object-cover transition-transform duration-300 hover:scale-105 w-full rounded-sm" />
+            <img src="{{ video.thumbnail }}" alt="{{ video.title }}" class="border object-cover transition-transform duration-300 hover:scale-105 w-full rounded-sm" />
             <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded">{{ video.duration }}</div>
           </div>
 
