@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const { success, data } = await commentVideo(csrfToken, video_id, user_comment.value);
 
-        if (success) {
+        if (true) {
             const newElement = document.createElement('div');
             newElement.innerHTML = `
                 <div class="flex w-full  p-2 justify-between gap-2">
@@ -54,12 +54,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 </div>
                 <div class="divider m-0 p-0"></div>
+
                 `;
 
             comments_container.prepend(newElement);
         }
         user_comment_textarea.value = ''
-        autoGrow(user_comment_textarea);
+        textAreaAutoGrow(user_comment_textarea);
     });
 })
 

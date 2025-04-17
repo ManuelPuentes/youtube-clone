@@ -1,0 +1,16 @@
+<div class="mx-auto">
+    <form action="/comment/" method="post" id="user_comment_form" class="flex gap-3 w-full items-center flex-col p-2 border-b">
+      {% csrf_token %}
+
+      <div class="flex w-full gap-2 items-center">
+        <div class="avatar">
+          <div class="w-12 h-12 rounded-full">
+            <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+          </div>
+        </div>
+
+        <textarea id="user_comment" name="text" class="textarea w-[90%] bg-blue" placeholder="Añade un comentario..."></textarea>
+      </div>
+      <button class="btn self-end" id="submit_comment" type="submit">comment</button>
+    </form>
+  </div>

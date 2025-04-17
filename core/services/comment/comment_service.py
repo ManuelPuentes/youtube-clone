@@ -9,6 +9,12 @@ class CommentService:
         self.user_repo = UserRepository()
         self.comment_repo = CommentRepository()
 
+
+    def get_comments(self, video_id):
+        comments = self.comment_repo.get_all_comments(video_id)
+
+        return comments
+
     def create_comment(self, user, video_id, comment_content):
 
         video = self.video_repo.get_video(video_id)

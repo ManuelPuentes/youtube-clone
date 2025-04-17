@@ -4,6 +4,7 @@
   <link rel="stylesheet" href="{% static 'core/css/lite-yt-embed.css' %}" />
   <script src="{% static 'core/js/lite-yt-embed.js' %}"></script>
   <script src="{% static 'core/js/watch.js' %}"></script>
+  <script src="{% static 'core/js/htmx.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -44,8 +45,6 @@
         </div>
 
         {% comment %}like and dislike button{% endcomment %}
-
-
       </div>
       {% comment %}this is the description zone{% endcomment %}
       <div class="border-base-300 bg-base-300 collapse border">
@@ -58,27 +57,22 @@
       {% comment %}this is the description zone{% endcomment %}
 
       <div id="comments" class="lg:col-span-2 p-2 my-2">
-        <h1 class="text-3xl">comments</h1>
+        <h1 class="text-3xl font-semibold">comments</h1>
 
-        <div class="mx-auto">
-          <form action="/comment/" method="post" id="user_comment_form" class="flex gap-3 w-full items-center flex-col p-2 border-b">
-            {% csrf_token %}
+        {% include 'partials/comment_video_form.html' %}
 
-            <div class="flex w-full gap-2 items-center">
-              <div class="avatar">
-                <div class="w-12 h-12 rounded-full">
-                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                </div>
-              </div>
-
-              <textarea id="user_comment" name="text" class="textarea w-[90%] bg-blue" placeholder="Añade un comentario..."></textarea>
+        <div id="comments_container" class="product-grid flex flex-col">
+          {% for comment in comments %}
+            <div class="comment">
+              {% include 'partials/comment.html' with comment=comment %}
+              <div class="divider m-0 p-0"></div>
             </div>
-            <button class="btn self-end" id="submit_comment" type="submit">comment</button>
-          </form>
 
-          {% comment %} <div class="divider"></div> {% endcomment %}
+            {% if comments.has_next and forloop.last %}
+              <span hx-get="{% url 'comment_video' %}?page={{ comments.next_page_number }}&v={{ video_data.id }}" hx-swap="beforeend" hx-target="#comments_container" hx-select=".comment" hx-trigger="revealed"></span>
+            {% endif %}
+          {% endfor %}
         </div>
-        {% include 'partials/comments.html' with page_obj=comments %}
 
         {% comment %} {{ comments }} {% endcomment %}
       </div>
