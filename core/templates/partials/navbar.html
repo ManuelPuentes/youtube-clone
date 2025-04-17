@@ -4,13 +4,13 @@
     <!-- Navbar -->
     <div class="navbar shadow-sm w-full m-0 select-none gap-1 justify-around">
       <div class="navbar-start w-1/4 gap-1">
-        <div class="flex-none">
+        <div class="flex-none hidden md:flex">
           <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-circle btn-ghost">{% include 'icons/burger.svg' with class='w-5 h-5' %}</label>
         </div>
 
-        <div class="items-center flex flex-col sm:flex-row sm:gap-1">
+        <div class="items-center flex sm:flex-row gap-1">
           {% include 'icons/youtube.svg' with class='w-6 h-6  sm:w-10 sm:h-10' %}
-          <p class="font-semibold sm:text-3xl">Youtube</p>
+          <p class="font-semibold sm:text-3xl text-xl">Youtube</p>
         </div>
       </div>
 
@@ -26,7 +26,7 @@
                 <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
               </div>
             </div>
-            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow">
               <li class="nav-item">
                 <a class="nav-link" href="/signout">Cerrar sesión</a>
               </li>

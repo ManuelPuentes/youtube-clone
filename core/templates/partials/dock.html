@@ -1,0 +1,17 @@
+<div class="dock dock-xs md:hidden">
+  <a href="/">
+    {% include 'icons/home.svg' with class='w-6 h-6' %}
+  </a>
+
+  {% if user.is_authenticated %}
+    <a href="upload_video">{% include 'icons/video.svg' with class='w-6 h-6' %}</a>
+  {% endif %}
+
+  {% if user.is_authenticated %}
+    <a href="/signout">
+      {% include 'icons/off.svg' with class='w-5 h-5' %}
+    </a>
+  {% else %}
+    <a href="/signin">{% include 'icons/user.svg' with class='w-6 h-6' %}</a>
+  {% endif %}
+</div>

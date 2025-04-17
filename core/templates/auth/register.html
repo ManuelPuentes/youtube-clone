@@ -6,43 +6,45 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex flex-col md:flex-row select-none md:m-auto lg:w-3/4 items-center px-10 py-5 md:rounded-4xl bg-base-100 max-w-[960px] min-h-[384px]">
-    <div class="w-full p-5 md:w-1/2 self-start flex flex-col gap-3">
-      {% include 'icons/google.svg' with class='w-10 h-10' %}
-      <h1 class="text-4xl font-semibold">Crear una cuenta</h1>
-      <p class="text-sm">Introduce tus datos</p>
-    </div>
-
-    <form method="post" class="flex flex-col whitespace-nowrap gap-4 p-4 items-center md:w-1/2 w-full">
-      {% csrf_token %}
-
-      {% for field in register_form %}
-        <fieldset class="fieldset flex w-[100%] flex-col whitespace-normal">
-          <legend class="fieldset-legend">{{ field.label_tag }}</legend>
-
-          <input type="{{ field.field.widget.input_type }}" class="input w-full" placeholder="{{ field.field.widget.attrs.placeholder }}" autocomplete="on" name="{{ field.name }}" required />
-
-          {% if field.help_text %}
-            <p class="text-gray-500 overflow-hidden w-full">{{ field.help_text }}</p>
-          {% endif %}
-
-          {% if field.errors %}
-            {% for error in field.errors %}
-              <p class="text-red-500 overflow-hidden">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-        </fieldset>
-      {% endfor %}
-
-      <div class="w-full flex justify-between">
-        <a href="/" class="text-sm self-start btn btn-ghost">Cancelar</a>
-
-        <button class="btn border border-[#e5e5e5] self-center" type="submit">Registrarse</button>
+  <div class="h-screen flex">
+    <div class="flex flex-col md:flex-row select-none md:m-auto lg:w-3/4 items-center px-10 py-5 md:rounded-4xl bg-base-100 max-w-[960px] min-h-[384px]">
+      <div class="w-full p-5 md:w-1/2 self-start flex flex-col gap-3">
+        {% include 'icons/google.svg' with class='w-10 h-10' %}
+        <h1 class="text-4xl font-semibold">Crear una cuenta</h1>
+        <p class="text-sm">Introduce tus datos</p>
       </div>
-    </form>
 
-    {% if register_form.error %}
-      <p class="overflow-hidden text-ellipsis text-red-500 text-xs">{{ register_form.error }}</p>
-    {% endif %}
+      <form method="post" class="flex flex-col whitespace-nowrap gap-4 p-4 items-center md:w-1/2 w-full">
+        {% csrf_token %}
+
+        {% for field in register_form %}
+          <fieldset class="fieldset flex w-[100%] flex-col whitespace-normal">
+            <legend class="fieldset-legend">{{ field.label_tag }}</legend>
+
+            <input type="{{ field.field.widget.input_type }}" class="input w-full" placeholder="{{ field.field.widget.attrs.placeholder }}" autocomplete="on" name="{{ field.name }}" required />
+
+            {% if field.help_text %}
+              <p class="text-gray-500 overflow-hidden w-full">{{ field.help_text }}</p>
+            {% endif %}
+
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="text-red-500 overflow-hidden">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </fieldset>
+        {% endfor %}
+
+        <div class="w-full flex justify-between">
+          <a href="/" class="text-sm self-start btn btn-ghost">Cancelar</a>
+
+          <button class="btn border border-[#e5e5e5] self-center" type="submit">Registrarse</button>
+        </div>
+      </form>
+
+      {% if register_form.error %}
+        <p class="overflow-hidden text-ellipsis text-red-500 text-xs">{{ register_form.error }}</p>
+      {% endif %}
+    </div>
   </div>
 {% endblock %}
