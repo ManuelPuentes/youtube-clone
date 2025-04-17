@@ -20,18 +20,7 @@
 
       <div class="navbar-end md:flex hidden">
         {% if user.is_authenticated %}
-          <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-              <div class="w-10 rounded-full">
-                <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-              </div>
-            </div>
-            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow">
-              <li class="nav-item">
-                <a class="nav-link" href="/signout">Cerrar sesión</a>
-              </li>
-            </ul>
-          </div>
+          <img alt="logged user picture" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" class="rounded-full w-10" />
         {% else %}
           <a class="btn" href="/signin">
             {% include 'icons/user.svg' with class='w-5 h-5' %}
@@ -59,6 +48,10 @@
 
         <li>
           <a href="/upload_video">{% include 'icons/video.svg' with class='w-6 h-6' %}Subir video</a>
+        </li>
+
+        <li>
+          <a class="nav-link" href="/signout">{% include 'icons/off.svg' with class='w-5 h-5' %}Cerrar sesión</a>
         </li>
       </ul>
     </div>

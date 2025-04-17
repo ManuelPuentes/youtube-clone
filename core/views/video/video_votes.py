@@ -21,7 +21,7 @@ class VideoVotesView(View):
         return JsonResponse(result)
 
     @method_decorator(login_required)
-    def put(self, request):
+    def post(self, request):
 
         data = json.loads(request.body)
 

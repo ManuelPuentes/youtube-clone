@@ -78,15 +78,17 @@ async function fetchVideoLikesDislike(video_id) {
 }
 
 async function LikeOrDislikeVideo(csrfToken, video_id, vote = true,) {
-    const url = `/video/vote`
+    const url = `/video/vote/`
 
     try {
         const data = await fetch(url, {
-            method: 'PUT', headers: {
+            method: 'post', headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,  // Include CSRF token
+                'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({ vote, video_id })
+            body: JSON.stringify({ vote, video_id }),
+
         }).then(response => response.json());
 
         return data;
