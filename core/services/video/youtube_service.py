@@ -103,7 +103,7 @@ class YoutubeService():
             'thumbnail': item['snippet']['thumbnails']['high']['url'],
             'channel': {
                 'title': channel['snippet']['title'],
-                'url': channel['snippet']['customUrl'],
+                # 'url': channel['snippet']['customUrl'],
                 'thumbnail': channel['snippet']['thumbnails']['high']['url'],
                 'subscribers': self._format_number(int(channel['statistics']['subscriberCount'])),
             },

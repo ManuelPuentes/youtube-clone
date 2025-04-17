@@ -18,7 +18,7 @@ class VideoService:
         channel_data = video_data.get('channel')
 
         user, _created = self.user_repo.get_or_create_user(
-            f'custom_email{channel_data.get('url')}.com',
+            f'custom_email{channel_data.get('title')}.com',
             {
                 'username': f'{channel_data.get('title')}',
                 'first_name': 'default_first_name',
@@ -45,6 +45,8 @@ class VideoService:
     def get_video_votes(self, user, video_id):
 
         video = self.video_repo.get_video(video_id)
+
+        user_vote = None
 
         if user.is_authenticated:
             user_vote = Vote.objects.filter(

@@ -14,54 +14,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 
-
-    function autoGrow(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = (textarea.scrollHeight) + 'px';
-    }
-      
-      // Usage:
-      
-      user_comment_textarea.addEventListener('input', () => autoGrow(user_comment_textarea));
-      // Initialize on load
-      autoGrow(user_comment_textarea);
-
-
-
-    const updateButtonsInterface = (total_likes, total_dislikes, user_vote, to_update) => {
-
-        if ((total_dislikes == undefined) || (total_dislikes == undefined)) return;
-
-        if (to_update) to_update.classList.toggle('btn-secondary')
-
-        like.innerText = `${total_likes} me gusta`;
-        dislike.innerText = `${total_dislikes} no me gusta`;
-
-        if (user_vote == null) return;
-
-        if (user_vote) {
-            like.classList.add('btn-secondary');
-            dislike.classList.remove('btn-secondary');
-
-        } else {
-            dislike.classList.add('btn-secondary');
-            like.classList.remove('btn-secondary');
-        }
-    }
+    textAreaAutoGrow(user_comment_textarea);
 
     const { total_likes, total_dislikes, user_vote } = await fetchVideoLikesDislike(video_id);
 
-    updateButtonsInterface(total_likes, total_dislikes, user_vote);
+    updateLikeDislikeInterface(total_likes, total_dislikes, user_vote);
 
+
+
+    user_comment_textarea.addEventListener('input', () => textAreaAutoGrow(user_comment_textarea));
 
     like.addEventListener("click", async (e) => {
         const { total_likes, total_dislikes, user_vote } = await LikeOrDislikeVideo(csrfToken, video_id)
-        updateButtonsInterface(total_likes, total_dislikes, user_vote, like);
+        updateLikeDislikeInterface(total_likes, total_dislikes, user_vote, like);
     });
 
     dislike.addEventListener("click", async (e) => {
         const { total_likes, total_dislikes, user_vote } = await LikeOrDislikeVideo(csrfToken, video_id, false)
-        updateButtonsInterface(total_likes, total_dislikes, user_vote, dislike);
+        updateLikeDislikeInterface(total_likes, total_dislikes, user_vote, dislike);
     });
 
 
@@ -100,6 +70,7 @@ async function fetchVideoLikesDislike(video_id) {
     try {
         const data = await fetch(url).then(response => response.json());
         return data;
+
     } catch (error) {
         return {};
     }
@@ -124,8 +95,6 @@ async function LikeOrDislikeVideo(csrfToken, video_id, vote = true,) {
     }
 }
 
-
-
 async function commentVideo(csrfToken, video_id, comment_content) {
     const url = `/comment/`
 
@@ -145,4 +114,32 @@ async function commentVideo(csrfToken, video_id, comment_content) {
     } catch (error) {
         return {};
     }
+}
+
+const updateLikeDislikeInterface = (total_likes, total_dislikes, user_vote, to_update) => {
+
+    if ((total_dislikes == undefined) || (total_dislikes == undefined)) return;
+
+    if (to_update) to_update.classList.toggle('btn-secondary')
+
+    like.innerText = `${total_likes} me gusta`;
+    dislike.innerText = `${total_dislikes} no me gusta`;
+
+    if (user_vote == null) return;
+
+    if (user_vote) {
+        like.classList.add('btn-secondary');
+        dislike.classList.remove('btn-secondary');
+
+    } else {
+        dislike.classList.add('btn-secondary');
+        like.classList.remove('btn-secondary');
+    }
+
+}
+
+const textAreaAutoGrow = (textarea) => {
+
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
 }

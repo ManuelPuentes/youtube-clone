@@ -1,9 +1,9 @@
 {% extends 'layout.html' %} {% load static %}
 
 {% block head %}
-  <link rel="stylesheet" href="{% static 'css/lite-yt-embed.css' %}" />
-  <script src="{% static 'js/lite-yt-embed.js' %}"></script>
-  <script src="{% static 'js/watch.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'core/css/lite-yt-embed.css' %}" />
+  <script src="{% static 'core/js/lite-yt-embed.js' %}"></script>
+  <script src="{% static 'core/js/watch.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -83,7 +83,6 @@
         {% comment %} {{ comments }} {% endcomment %}
       </div>
     </div>
-
     <div class="lg:col-span-1 flex flex-col items-center gap-2 mx-2">
       {% comment %}{/* Featured Video */}{% endcomment %}
       {% for video in related_videos %}
