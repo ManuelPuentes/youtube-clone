@@ -1,0 +1,18 @@
+<div class="group w-full max-w-[360px]">
+  <div class="relative aspect-video mb-2 flex">
+    <img src="{{ video.thumbnail }}" alt="{{ video.title }}" class="object-cover transition-transform duration-300 hover:scale-105 w-full rounded-sm" />
+    <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded">{{ video.duration }}</div>
+  </div>
+
+  <div class="flex-1 min-w-0">
+    <div class="flex justify-between">
+      <a href="/watch?v={{ video.id }}" class="font-semibold line-clamp-2 hover:underline">{{ video.title }}</a>
+    </div>
+
+    <a href="/channel/{{ video.channelTitle }}" class="text-xs text-muted-foreground">{{ video.channelTitle }}</a>
+
+    <div class="text-xs text-muted-foreground">
+      <span>{{ video.views }} visualizacines</span>
+    </div>
+  </div>
+</div>

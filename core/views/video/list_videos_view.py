@@ -1,6 +1,7 @@
+from django.shortcuts import render
 from django.views import View
-from django.http import JsonResponse
 from core.services.video.youtube_service import YoutubeService
+
 
 class ListVideosView(View):
 
@@ -20,4 +21,6 @@ class ListVideosView(View):
             'prev_page_token': response.get('next_page_token')
         }
 
-        return JsonResponse(context)
+        return render(request, 'partials/list_videos.html', {
+            'data': context
+        })

@@ -1,21 +1,17 @@
-{% extends 'layout.html' %} 
+{% extends 'layout.html' %}
 {% load static %}
 
-
-{% block title %} Youtube{% endblock%}
-
-{% block head %}
-  <script src="{% static 'core/js/video_fetcher.js' %}"></script>
+{% block title %}
+  Youtube
 {% endblock %}
 
+{% block head %}
+  <script src="{% static 'core/js/htmx.min.js' %}"></script>
+{% endblock %}
 
 {% block content %}
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-auto p-4" id="videos-container"></div>
-
-  <div id="load-more-trigger" style="height: 20px;"></div>
-
-  <div id="next_page"></div>
-
-  <span class="loading loading-ring loading-xl self-center p-4" id="loading-message"></span>
+  <div id="videos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-auto p-4">
+    <span hx-get="{% url 'list_videos' %}" hx-trigger="load" hx-swap="beforeend" hx-target="#videos-container" hx-on:htmx:after-request="this.remove()" hx-indicator="#indicator"></span>
+  </div>
+  <span class="loading loading-ring loading-xl self-center p-4 htmx-indicator" id="indicator"></span>
 {% endblock %}

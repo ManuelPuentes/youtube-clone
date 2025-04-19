@@ -18,10 +18,12 @@ class CommentVideoView(View):
 
         video_id = request.GET.get('v')
 
-        if video_id is None:
-            return redirect('home')
+        # if video_id is None:
+        #     return redirect('home')
 
         page_number = request.GET.get('page', 1)
+
+        print(page_number)
 
         paginator = Paginator(self.comment_service.get_comments(video_id), 5)
         page_obj = paginator.get_page(page_number)
