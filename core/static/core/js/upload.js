@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const form_id = document.getElementById('id');
     const form_title = document.getElementById('title');
     const form_thumbnail = document.getElementById('thumbnail');
@@ -21,10 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             video_thumbnail.src = ''
         }
     });
-
-
-
-
 })
 
 

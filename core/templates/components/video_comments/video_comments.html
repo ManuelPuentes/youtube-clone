@@ -1,3 +1,5 @@
+{% include 'partials/comment_video_form.html' %}
+
 <div id="comments_container" class="lg:col-span-2 p-2 my-2">
   <span hx-get="{% url 'comment_video' %}?v={{ video_data.id }}" hx-trigger="load" hx-swap="beforeend" hx-target="#comments_container" hx-on:htmx:after-request="this.remove()" hx-indicator="#indicator"></span>
 </div>

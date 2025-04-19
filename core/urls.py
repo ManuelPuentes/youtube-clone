@@ -5,6 +5,7 @@ from core.views.auth.signin_view import SignInView
 from core.views.auth.signout_view import SignOutView
 from core.views.auth.register_view import RegisterView
 
+from core.views.video.video_votes import VideoVotesView
 from core.views.video.watch_view import WatchVideoView
 from core.views.video.list_videos_view import ListVideosView
 from core.views.video.upload_video_view import UploadVideoView
@@ -27,5 +28,5 @@ urlpatterns = [
     path('upload_video/', UploadVideoView.as_view(), name='upload'),
     path('related_videos/', RelatedVideosViews.as_view(), name='related_videos'),
 
-    # path('video/vote/', VideoVotesView.as_view(), name='video_votes'),
+    path('video/vote/', VideoVotesView.as_view(), name='video_votes'),
 ]
