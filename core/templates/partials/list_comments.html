@@ -1,0 +1,7 @@
+{% for item in data.comments %}
+  {% include 'components/video_comments/comment.html' with comment=item %}
+
+  {% if data.comments.has_next and forloop.last %}
+    <span hx-get="{% url 'comment_video' %}?page={{ data.comments.next_page_number }}&v={{ data.video_id }}" hx-trigger="revealed" hx-swap="beforeend" hx-target="#comments_container" hx-on:htmx:after-request="this.remove()" hx-indicator="#indicator"></span>
+  {% endif %}
+{% endfor %}

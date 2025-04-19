@@ -24,14 +24,14 @@ class WatchVideoView(View):
 
         self.video_service.create_video_if_needed(video_data)
 
-        paginator = Paginator(self.comment_service.get_comments(video_id), 5)
-        page_obj = paginator.get_page(1)
+        # paginator = Paginator(self.comment_service.get_comments(video_id), 5)
+        # page_obj = paginator.get_page(1)
 
-        related_videos = self.youtube_service.related_videos(
-            video_data.get('category'), 10)['videos']
+        # related_videos = self.youtube_service.related_videos(
+        #     video_data.get('category'), 10)['videos']
 
         return render(request, 'watch.html', {
             'video_data': video_data,
-            'related_videos': related_videos,
-            'comments': page_obj
+            # 'related_videos': related_videos,
+            # 'comments': page_obj
         })

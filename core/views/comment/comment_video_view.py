@@ -18,17 +18,22 @@ class CommentVideoView(View):
 
         video_id = request.GET.get('v')
 
-        # if video_id is None:
-        #     return redirect('home')
+        if video_id is None:
+            return
 
         page_number = request.GET.get('page', 1)
 
-        print(page_number)
-
-        paginator = Paginator(self.comment_service.get_comments(video_id), 5)
+        paginator = Paginator(self.comment_service.get_comments(video_id), 10)
         page_obj = paginator.get_page(page_number)
 
-        return render(request, 'articles.html', {'comments': page_obj})
+        context = {
+            'comments': page_obj,
+            'video_id': video_id
+        }
+
+        return render(request, 'partials/list_comments.html', {
+            'data': context
+        })
 
     @method_decorator(login_required)
     def post(self, request):

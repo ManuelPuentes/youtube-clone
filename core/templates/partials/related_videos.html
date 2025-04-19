@@ -1,0 +1,7 @@
+{% for item in data.related_videos %}
+  {% include 'components/video.html' with video=item %}
+
+  {% if data.next_page_token and forloop.last %}
+    <span hx-get="{% url 'related_videos' %}?page={{ data.next_page_token }}&category={{ data.video_category }}" hx-trigger="revealed" hx-swap="beforeend" hx-target="#related_videos_container" hx-on:htmx:after-request="this.remove()" hx-indicator="#indicator"></span>
+  {% endif %}
+{% endfor %}

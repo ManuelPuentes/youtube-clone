@@ -1,0 +1,20 @@
+{% load static %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'core/css/lite-yt-embed.css' %}" />
+  <script src="{% static 'core/js/lite-yt-embed.js' %}"></script>
+{% endblock %}
+
+
+<div class="relative aspect-video bg-black rounded-lg overflow-hidden border flex justify-center">
+  <lite-youtube videoid="{{ video_data.id }}" playlabel="{{ video_data.title }}" class="w-full"></lite-youtube>
+</div>
+
+<h1 class="font-bold mt-4 mb-2 text-3xl">{{ video_data.title }}</h1>
+
+
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+    {% include 'components/video_player/video_channel.html' with channel=video_data.channel %}
+    {% include 'components/video_player/video_vote.html' %}
+  </div>
+{% include 'components/video_player/video_description.html' with views=video_data.views description=video_data.description %}
