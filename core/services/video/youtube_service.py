@@ -1,4 +1,5 @@
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from django.conf import settings
 import isodate
 
@@ -113,42 +114,44 @@ class YoutubeService():
 
     def search(self, max_results=10, search_query='', page_token=None):
 
-        request = self.youtube.search().list(
-            part="id,snippet",
-            q=search_query,  # El parámetro de búsqueda
-            maxResults=max_results,
-            pageToken=page_token,
-            type="video",    # Puedes especificar el tipo: video, channel, playlist
-            order="relevance"  # Otros valores: date, rating, viewCount
-        )
-        search_response = request.execute()
+        try:
+            search_response = self.youtube.search().list(
+                part="id,snippet",
+                q=search_query,  # El parámetro de búsqueda
+                maxResults=max_results,
+                pageToken=page_token,
+                type="video",    # Puedes especificar el tipo: video, channel, playlist
+                order="relevance"  # Otros valores: date, rating, viewCount
+            ).execute()
 
-        video_ids = [item['id']['videoId']
-                     for item in search_response['items']]
+            video_ids = [item['id']['videoId']
+                         for item in search_response['items']]
+            videos_stats = self.youtube.videos().list(
+                part="statistics,contentDetails",
+                id=",".join(video_ids)
+            ).execute()
 
-        videos_stats = self.youtube.videos().list(
-            part="statistics,contentDetails",
-            id=",".join(video_ids)
-        ).execute()
+            videos = []
+            for search_item, stats_item in zip(search_response['items'], videos_stats['items']):
 
-        videos = []
-        for search_item, stats_item in zip(search_response['items'], videos_stats['items']):
-
-            videos.append({
-                'id': search_item['id']['videoId'],
-                'title': search_item['snippet']['title'],
-                'thumbnail': search_item['snippet']['thumbnails']['default']['url'],
-                'channelTitle': search_item['snippet']['channelTitle'],
-                'url': f'https://www.youtube.com/watch?v={search_item['id']['videoId']}',
-                'views': self._format_number(int(stats_item['statistics']['viewCount'])),
-                'duration': self._format_video_duration(stats_item['contentDetails']['duration'])
-            })
+                videos.append({
+                    'id': search_item['id']['videoId'],
+                    'title': search_item['snippet']['title'],
+                    'thumbnail': search_item['snippet']['thumbnails']['high']['url'],
+                    'channelTitle': search_item['snippet']['channelTitle'],
+                    'url': f'https://www.youtube.com/watch?v={search_item['id']['videoId']}',
+                    'views': self._format_number(int(stats_item['statistics']['viewCount'])),
+                    'duration': self._format_video_duration(stats_item['contentDetails']['duration'])
+                })
 
             return {
                 'videos': videos,
                 'next_page_token': search_response.get('nextPageToken'),
                 'prev_page_token': search_response.get('prevPageToken')
             }
+
+        except HttpError as e:
+            return {'message':  self.map_youtube_api_errors(e.resp.status), 'error': e}
 
     def _format_video_duration(self, iso_duration):
         duration = isodate.parse_duration(iso_duration)
@@ -167,3 +170,15 @@ class YoutubeService():
             return f"{num / 1_000:.1f}K"
         else:
             return str(num)
+
+    def map_youtube_api_errors(self, status):
+
+        match status:
+            case 400:
+                return "Bad request"
+            case 403:
+                return "API quota exceeded"
+            case 418:
+                return "I'm a teapot"
+            case _:
+                return "YouTube API error"

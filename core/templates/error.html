@@ -1,0 +1,54 @@
+{% block content %}
+  <div class="bg-white p-8 max-w-md w-full">
+    <!-- Error Icon -->
+    <div class="text-center mb-6">
+      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+        <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Error Content -->
+    <div class="text-center">
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">API Request Failed</h1>
+
+      <div class="text-gray-600 mb-6">
+        {% if error_code == 403 %}
+          <p>We've exceeded our YouTube API quota limits.</p>
+          <p class="mt-2">Please try again later or contact support.</p>
+        {% elif error_code == 400 %}
+          <p>Invalid request parameters were sent to the API.</p>
+        {% else %}
+          <p>An unexpected error occurred while processing your request.</p>
+        {% endif %}
+      </div>
+
+      <!-- Error Details (hidden by default, expandable) -->
+      <details class="mb-6">
+        <summary class="text-sm text-blue-600 cursor-pointer">Technical Details</summary>
+        <div class="mt-2 p-3 bg-gray-50 rounded text-left text-sm text-gray-700">
+          {% comment %} <p class="whitespace-pre-wrap"></p> {% endcomment %}
+
+          <span class="break-all">
+            <strong>Error:</strong>
+            {{ error_message }}
+          </span>
+          <p class="mt-1">
+            <strong>Code:</strong> {{ error_code }}
+          </p>
+          {% if error_details %}
+            <p class="mt-1">
+              <strong>Details:</strong> {{ error_details }}
+            </p>
+          {% endif %}
+        </div>
+      </details>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Return Home</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

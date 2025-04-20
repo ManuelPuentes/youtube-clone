@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+  {{ data.query }}
+{% endblock %}
+
+{% block head %}
+  <script src="{% static 'core/js/htmx.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div id="videos-container" class="flex m-auto">
+    <span hx-get="{% url 'search' %}?page={{ data.next_page_token }}&q={{ data.query }}" hx-trigger="load" hx-target="#videos-container" hx-swap="beforeend" hx-target="#videos-container" hx-on:htmx:after-request="this.remove()" hx-indicator="#indicator"></span>
+  </div>
+
+  <span class="loading loading-ring loading-xl self-center p-4 htmx-indicator" id="indicator"></span>
+{% endblock %}

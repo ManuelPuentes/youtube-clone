@@ -1,13 +1,8 @@
-{% extends 'layout.html' %}
-{% load static %}
-
-{% comment %} {% for item in data.videos %}
-  {% include 'components/video.html' with video=item %}
-  {% if data.next_page_token and forloop.last %}
-    <span hx-get="{% url 'search' %}?page={{ data.next_page_token }}&q={{ data.query }}" hx-trigger="revealed" hx-swap="beforeend" hx-target="#videos-container" hx-on:htmx:after-request="this.remove()" hx-indicator="#indicator"></span>
-  {% endif %}
-{% endfor %} {% endcomment %}
-
 {% block content %}
-  {{ data }}
+  {% for item in data.videos %}
+    {% include 'components/video.html' with video=item %}
+    {% if data.next_page_token and forloop.last %}
+      <span hx-get="{% url 'search' %}?page={{ data.next_page_token }}&q={{ data.query }}" hx-trigger="revealed" hx-swap="beforeend" hx-target="#videos-container" hx-on:htmx:after-request="this.remove()">a</span>
+    {% endif %}
+  {% endfor %}
 {% endblock %}
