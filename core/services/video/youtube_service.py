@@ -111,6 +111,45 @@ class YoutubeService():
             'duration': self._format_video_duration(item['contentDetails']['duration'])
         }
 
+    def search(self, max_results=10, search_query='', page_token=None):
+
+        request = self.youtube.search().list(
+            part="id,snippet",
+            q=search_query,  # El parámetro de búsqueda
+            maxResults=max_results,
+            pageToken=page_token,
+            type="video",    # Puedes especificar el tipo: video, channel, playlist
+            order="relevance"  # Otros valores: date, rating, viewCount
+        )
+        search_response = request.execute()
+
+        video_ids = [item['id']['videoId']
+                     for item in search_response['items']]
+
+        videos_stats = self.youtube.videos().list(
+            part="statistics,contentDetails",
+            id=",".join(video_ids)
+        ).execute()
+
+        videos = []
+        for search_item, stats_item in zip(search_response['items'], videos_stats['items']):
+
+            videos.append({
+                'id': search_item['id']['videoId'],
+                'title': search_item['snippet']['title'],
+                'thumbnail': search_item['snippet']['thumbnails']['default']['url'],
+                'channelTitle': search_item['snippet']['channelTitle'],
+                'url': f'https://www.youtube.com/watch?v={search_item['id']['videoId']}',
+                'views': self._format_number(int(stats_item['statistics']['viewCount'])),
+                'duration': self._format_video_duration(stats_item['contentDetails']['duration'])
+            })
+
+            return {
+                'videos': videos,
+                'next_page_token': search_response.get('nextPageToken'),
+                'prev_page_token': search_response.get('prevPageToken')
+            }
+
     def _format_video_duration(self, iso_duration):
         duration = isodate.parse_duration(iso_duration)
         horas = duration.seconds // 3600
