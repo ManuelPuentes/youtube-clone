@@ -29,6 +29,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)  # Asegúrate que DEBUG esté 
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.railway.app']
 
+
+REFERER = config('REFERER', default='http://localhost')
+
+ # request.headers["referer"] = config('SECRET_KEY', default='default-value')
+
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
     'https://youtube-clone-production.up.railway.app',

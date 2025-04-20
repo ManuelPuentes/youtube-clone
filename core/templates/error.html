@@ -15,8 +15,7 @@
 
       <div class="text-gray-600 mb-6">
         {% if error_code == 403 %}
-          <p>We've exceeded our YouTube API quota limits.</p>
-          <p class="mt-2">Please try again later or contact support.</p>
+          <p class="mt-2">{{ error_message }}</p>
         {% elif error_code == 400 %}
           <p>Invalid request parameters were sent to the API.</p>
         {% else %}

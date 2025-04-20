@@ -20,18 +20,19 @@ class WatchVideoView(View):
         if video_id is None:
             return redirect('home')
 
-        video_data = self.youtube_service.video_details(video_id)
+        response = self.youtube_service.video_details(video_id)
 
-        self.video_service.create_video_if_needed(video_data)
+        if response.get('error'):
+            error = response.get('error')
 
-        # paginator = Paginator(self.comment_service.get_comments(video_id), 5)
-        # page_obj = paginator.get_page(1)
+            return render(request, 'error.html', {
+                'error_message': response.get('message'),
+                'error_code': error.resp.status,
+                'error_details': error.error_details if hasattr(error, 'error_details') else None
+            })
 
-        # related_videos = self.youtube_service.related_videos(
-        #     video_data.get('category'), 10)['videos']
+        self.video_service.create_video_if_needed(response)
 
         return render(request, 'watch.html', {
-            'video_data': video_data,
-            # 'related_videos': related_videos,
-            # 'comments': page_obj
+            'video_data': response,
         })
