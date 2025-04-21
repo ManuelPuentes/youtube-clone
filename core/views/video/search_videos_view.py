@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from core.services.video.youtube_service import YoutubeService
 from googleapiclient.errors import HttpError
@@ -18,12 +18,12 @@ class SearchVideosView(View):
 
         if is_htmx:
             response = self.youtube_service.search(
-                max_results=5, page_token=page_token, search_query=search_query)
+                max_results=20, page_token=page_token, search_query=search_query)
 
             if response.get('error'):
                 error = response.get('error')
 
-                return render(request, 'error.html', {
+                return redirect(request, 'error.html', {
                     'error_code': error.resp.status,
                     'error_details': error.error_details if hasattr(error, 'error_details') else None
                 })
@@ -37,4 +37,5 @@ class SearchVideosView(View):
             return render(request, 'partials/search_videos.html', {'data': context})
 
         else:
+            print("adios")
             return render(request, 'search.html', {'data': {'query': search_query}})

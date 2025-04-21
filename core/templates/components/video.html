@@ -9,7 +9,7 @@
       <a href="/watch?v={{ video.id }}" class="font-semibold line-clamp-2 hover:underline">{{ video.title }}</a>
     </div>
 
-    <a href="/channel/{{ video.channelTitle }}" class="text-xs text-muted-foreground">{{ video.channelTitle }}</a>
+    <a href="/channel/{{ video.channel.name }}" class="text-xs text-muted-foreground">{{ video.channel.name }}</a>
 
     <div class="text-xs text-muted-foreground">
       <span>{{ video.views }} visualizacines</span>

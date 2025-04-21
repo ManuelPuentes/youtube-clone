@@ -1,6 +1,7 @@
 from core.models import Vote
 from core.repositories.user_repository import UserRepository
 from core.repositories.videos_repository import VideoRepository
+from core.utils.data_class.video_data import VideoData
 
 
 class VideoService:
@@ -14,25 +15,24 @@ class VideoService:
 
         return result, video
 
-    def create_video_if_needed(self, video_data):
-        channel_data = video_data.get('channel')
+    def create_video_if_needed(self, video_data: VideoData):
 
         user, _created = self.user_repo.get_or_create_user(
-            f'custom_email{channel_data.get('title')}.com',
+            f'custom_email{video_data.channel.name}.com',
             {
-                'username': f'{channel_data.get('title')}',
+                'username': f'{video_data.channel.name}',
                 'first_name': 'default_first_name',
                 'last_name': 'default_last_name',
-                'password': 'default_password'
+                'password': f'{video_data.channel.name}_password'
             }
         )
 
         video, _video_created = self.video_repo.get_or_create_video(
-            f'{video_data.get('id')}',
+            f'{video_data.id}',
             {
-                'title': f'{video_data.get('title')}',
-                'description': f'{video_data.get('description')}',
-                'thumbnail': f'{video_data.get('thumbnail')}',
+                'title': f'{video_data.title}',
+                'description': f'{video_data.description}',
+                'thumbnail': f'{video_data.thumbnail}',
                 'uploader_id': f'{user.id}'
             }
         )

@@ -31,8 +31,8 @@ class WatchVideoView(View):
                 'error_details': error.error_details if hasattr(error, 'error_details') else None
             })
 
-        self.video_service.create_video_if_needed(response)
+        self.video_service.create_video_if_needed(response.get('video'))
 
         return render(request, 'watch.html', {
-            'video_data': response,
+            'video_data': response.get('video'),
         })

@@ -4,6 +4,8 @@ from django.conf import settings
 import isodate
 from decouple import config
 
+from core.utils.data_class.video_data import ChannelData, VideoData
+
 
 class YoutubeService():
 
@@ -11,31 +13,28 @@ class YoutubeService():
         self.youtube = build(
             'youtube', 'v3', developerKey=settings.YOUTUBE_API_KEY)
 
+    def _make_request(self, endpoint, **kwargs):
+        request = getattr(self.youtube, endpoint)().list(**kwargs)
+        request.headers["referer"] = settings.REFERER
+        return request.execute()
+
     def popular_videos(self, max_results=10, page_token=None):
 
         try:
-            request = self.youtube.videos().list(
+
+            response = self._make_request(
+                'videos',
                 part="id,snippet,statistics,contentDetails",
                 chart="mostPopular",
                 maxResults=max_results,
                 pageToken=page_token,
             )
 
-            request.headers["referer"] = settings.REFERER
-
-            response = request.execute()
-
             videos = []
             for item in response.get('items', []):
-                videos.append({
-                    'id': item['id'],
-                    'title': item['snippet']['title'],
-                    'thumbnail': item['snippet']['thumbnails']['high']['url'],
-                    'channelTitle': item['snippet']['channelTitle'],
-                    'url': f'https://www.youtube.com/watch?v={item['id']}',
-                    'views': self._format_number(int(item['statistics']['viewCount'])),
-                    'duration': self._format_video_duration(item['contentDetails']['duration'])
-                })
+
+                if video := VideoData.from_videos_api_response(item):
+                    videos.append(video)
 
             return {
                 'videos': videos,
@@ -49,7 +48,9 @@ class YoutubeService():
     def related_videos(self, category, max_results=10, page_token=None):
 
         try:
-            request = self.youtube.videos().list(
+
+            response = self._make_request(
+                'videos',
                 part="id,snippet,statistics,contentDetails",
                 chart="mostPopular",
                 videoCategoryId=category,
@@ -57,21 +58,11 @@ class YoutubeService():
                 pageToken=page_token,
             )
 
-            request.headers["referer"] = settings.REFERER
-
-            response = request.execute()
-
             videos = []
             for item in response.get('items', []):
-                videos.append({
-                    'id': item['id'],
-                    'title': item['snippet']['title'],
-                    'thumbnail': item['snippet']['thumbnails']['high']['url'],
-                    'channelTitle': item['snippet']['channelTitle'],
-                    'url': f'https://www.youtube.com/watch?v={item['id']}',
-                    # 'views': self._format_number(int(item['statistics']['viewCount'])),
-                    'duration': self._format_video_duration(item['contentDetails']['duration'])
-                })
+
+                if video := VideoData.from_videos_api_response(item):
+                    videos.append(video)
 
             return {
                 'videos': videos,
@@ -84,77 +75,58 @@ class YoutubeService():
     def video_details(self, video_id):
 
         try:
-            video_request = self.youtube.videos().list(
+
+            video = self.get_first_item(self._make_request(
+                'videos',
                 part="id,snippet,statistics,contentDetails",
-                id=video_id)
+                id=video_id
+            ))
 
-            video_request.headers["referer"] = settings.REFERER
+            video_data = VideoData.from_videos_api_response(video)
 
-            response_video = video_request.execute()
-
-            item = response_video.get('items')[0]
-
-            channel_request = self.youtube.channels().list(
+            channel = self.get_first_item(self._make_request(
+                'channels',
                 part="snippet,statistics",
-                id=item['snippet']['channelId']
-            )
+                id=video_data.channel.id
+            ))
 
-            channel_request.headers["referer"] = settings.REFERER
+            video_data.channel = ChannelData.from_api_response(channel)
 
-            response_channel = channel_request.execute()
-
-            channel = response_channel.get('items')[0]
-
-            return {
-                'id': item['id'],
-                'title': item['snippet']['title'],
-                'category': item['snippet']['categoryId'],
-                'description': item['snippet']['description'],
-                'thumbnail': item['snippet']['thumbnails']['high']['url'],
-                'channel': {
-                    'title': channel['snippet']['title'],
-                    # 'url': channel['snippet']['customUrl'],
-                    'thumbnail': channel['snippet']['thumbnails']['high']['url'],
-                    'subscribers': self._format_number(int(channel['statistics']['subscriberCount'])),
-                },
-                'views': self._format_number(int(item['statistics']['viewCount'])),
-                'duration': self._format_video_duration(item['contentDetails']['duration'])
-            }
+            return {'video': video_data, 'success': True}
 
         except HttpError as error:
             return {'message':  self.handle_youtube_api_errors(error), 'error': error}
+        except ValueError as error:
+            return {'message':  'elemento no encontrado', 'error': error}
 
     def search(self, max_results=10, search_query='', page_token=None):
 
         try:
-            search_response = self.youtube.search().list(
+            search_response = self._make_request(
+                'search',
                 part="id,snippet",
-                q=search_query,  # El parámetro de búsqueda
+                q=search_query,
                 maxResults=max_results,
                 pageToken=page_token,
                 type="video",    # Puedes especificar el tipo: video, channel, playlist
                 order="relevance"  # Otros valores: date, rating, viewCount
-            ).execute()
+            )
 
             video_ids = [item['id']['videoId']
                          for item in search_response['items']]
-            videos_stats = self.youtube.videos().list(
-                part="statistics,contentDetails",
+
+            videos_response = self._make_request(
+                'videos',
+                part="id,snippet,statistics,contentDetails",
+                maxResults=max_results,
                 id=",".join(video_ids)
-            ).execute()
+            )
 
             videos = []
-            for search_item, stats_item in zip(search_response['items'], videos_stats['items']):
+            for item in videos_response.get('items', []):
 
-                videos.append({
-                    'id': search_item['id']['videoId'],
-                    'title': search_item['snippet']['title'],
-                    'thumbnail': search_item['snippet']['thumbnails']['high']['url'],
-                    'channelTitle': search_item['snippet']['channelTitle'],
-                    'url': f'https://www.youtube.com/watch?v={search_item['id']['videoId']}',
-                    'views': self._format_number(int(stats_item['statistics']['viewCount'])),
-                    'duration': self._format_video_duration(stats_item['contentDetails']['duration'])
-                })
+                if video := VideoData.from_videos_api_response(item):
+                    videos.append(video)
 
             return {
                 'videos': videos,
@@ -163,25 +135,20 @@ class YoutubeService():
             }
 
         except HttpError as e:
-            return {'message':  self.map_youtube_api_errors(e.resp.status), 'error': e}
-
-    def _format_video_duration(self, iso_duration):
-        duration = isodate.parse_duration(iso_duration)
-        horas = duration.seconds // 3600
-        minutos = (duration.seconds % 3600) // 60
-        segundos = duration.seconds % 60
-
-        return f'{horas}:{minutos}:{segundos}'
-
-    def _format_number(self, num):
-        if num >= 1_000_000_000:
-            return f"{num / 1_000_000_000:.1f}B"
-        elif num >= 1_000_000:
-            return f"{num / 1_000_000:.1f}M"
-        elif num >= 1_000:
-            return f"{num / 1_000:.1f}K"
-        else:
-            return str(num)
+            print(e)
+            return {'message':  self.handle_youtube_api_errors(e), 'error': e}
 
     def handle_youtube_api_errors(self, error):
         return error.error_details[0]['message'] if error.error_details[0]['message'] else None
+
+    def get_first_item(self, api_response):
+        try:
+            if not api_response.get('items'):
+                raise ValueError(
+                    "El response no contiene elementos en 'items'")
+
+            first_item = api_response['items'][0]
+            return first_item
+
+        except (KeyError, IndexError) as e:
+            raise ValueError("No se pudo obtener el elemento") from e

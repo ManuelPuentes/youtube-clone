@@ -1,5 +1,6 @@
 from django.urls import path
 
+from core.views.error_page import ErrorView
 from core.views.home import HomeView
 from core.views.auth.signin_view import SignInView
 from core.views.auth.signout_view import SignOutView
@@ -30,6 +31,6 @@ urlpatterns = [
     path('video/vote/', VideoVotesView.as_view(), name='video_votes'),
 
 
-
     path('search', SearchVideosView.as_view(), name='search'),
+    path('error_page/', ErrorView.as_view(), name='error_page'),
 ]

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from core.services.video.youtube_service import YoutubeService
 
@@ -21,11 +21,12 @@ class RelatedVideosViews(View):
         if response.get('error'):
             error = response.get('error')
 
-            return render(request, 'error.html', {
+            return redirect(request, 'error.html', {
                 'error_message': response.get('message'),
                 'error_code': error.resp.status,
                 'error_details': error.error_details if hasattr(error, 'error_details') else None
             })
+
 
         context = {
             'related_videos': response.get('videos'),
